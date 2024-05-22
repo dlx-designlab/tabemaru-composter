@@ -1,0 +1,14 @@
+{
+  "name": "composter-service",
+  "version": "1.0.0",
+  "description": "Server for handling data from ESP32",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Aloys Moreau",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
