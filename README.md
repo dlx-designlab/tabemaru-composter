@@ -1,4 +1,4 @@
-# Tabemaru Composter Scrips
+# Tabemaru Composter Scripts
 
 Tabemaru Composter is an open-source hardware and software project designed to create a small-scale, user-friendly food waste composter. This system integrates IoT capabilities for easy monitoring and aims to promote sustainable waste management practices in home and community settings.
 
