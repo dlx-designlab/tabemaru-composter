@@ -8,3 +8,7 @@ Features
 * Real-Time Monitoring: Track key metrics like temperature, humidity, and decomposition progress using built-in sensors.
 * Eco-Friendly Design: Constructed with sustainable and cost-effective materials.
 * Customizable Setup: Modular design allows for adaptation to various needs and scales. 
+
+
+Folders:
+Explain what the code/scripts in the different folders does.
