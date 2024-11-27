@@ -45,7 +45,6 @@ void loop() {
   // Pause after the second motion
   delay(pauseAfterSecond);
 
-  // Repeat loop
 }
 
 // Function to turn motor for a set number of revolutions at a given RPM
