@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de Données</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        table, .header-title {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #606060;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .excel-icon, .home-icon {
+            font-size: 24px;
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            cursor: pointer;
+            color: #4CAF50;
+        }
+        .rows-select {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header-title {
+            font-size: 24px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 8px;
+        }
+        .navigation-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+            user-select: none;
+        }
+        .left-arrow {
+            left: 10px;
+        }
+        .right-arrow {
+            right: 10px;
+        }
+        .return-to-home {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <a href="/index.html" class="return-to-home">◄ Composters</a>
+    <div class="header-title">
+        <span class="navigation-arrow left-arrow" onclick="navigate(-1)">◄</span>
+        Composter 1
+        <span class="navigation-arrow right-arrow" onclick="navigate(1)">►</span>
+    </div>
+    <i class="fas fa-file-excel excel-icon" onclick="downloadExcel()"></i>
+    <select class="rows-select" id="rows-select" onchange="updateRowsVisible(this.value)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="25" selected>25</option>
+    </select>
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Date and Time</th>
+                <th>Temperature 1</th>
+                <th>Temperature 2</th>
+                <th>Humidity</th>
+                <th>Weight</th>
+                <th>Fan Speed</th>
+                <th>Heater</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Les données seront ajoutées ici dynamiquement -->
+        </tbody>
+    </table>
+
+    <script>
+        var currentComposter = 1; // Start with composter 1
+        var currentRowsVisible = 25; // Default number of rows visible
+
+        function navigate(direction) {
+            currentComposter += direction;
+            if (currentComposter < 1) currentComposter = 5; // Wrap around to last composter
+            if (currentComposter > 5) currentComposter = 1; // Wrap around to first composter
+            document.querySelector('.header-title').innerHTML = `<span class="navigation-arrow left-arrow" onclick="navigate(-1)">◄</span>Composter ${currentComposter}<span class="navigation-arrow right-arrow" onclick="navigate(1)">►</span>`;
+            generateSampleData(); // Regenerate data for new composter
+            setRowsVisible(currentRowsVisible); // Apply the current row setting
+        }
+
+        function updateRowsVisible(value) {
+            currentRowsVisible = parseInt(value);
+            setRowsVisible(currentRowsVisible);
+        }
+
+        function setRowsVisible(count) {
+            var rows = document.querySelectorAll('#dataTable tbody tr');
+            rows.forEach((row, index) => {
+                row.style.display = index < count ? '' : 'none';
+            });
+        }
+
+        function generateSampleData() {
+            const tbody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = ''; // Clear previous data
+            for (let i = 0; i < 150; i++) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${new Date().getFullYear() + '/' + ('0' + (new Date().getMonth() + 1)).slice(-2) + '/' + ('0' + new Date().getDate()).slice(-2) + ' 10:' + ('0' + i).slice(-2)}</td>
+                    <td>${25 + currentComposter + i}°C</td>
+                    <td>${24 + currentComposter + i}°C</td>
+                    <td>${40 + currentComposter + i}%</td>
+                    <td>${15 + 0.5 * i}kg</td>
+                    <td>${1200 + 10 * i} RPM</td>
+                    <td>${i % 2 === 0 ? 'ON' : 'OFF'}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+            updateSelectOptions(); // Update select options based on data count
+        }
+
+        function downloadExcel() {
+            let lastDateTime = "";
+            if (document.getElementById('dataTable').rows.length > 1) {
+                const lastRow = document.getElementById('dataTable').rows[document.getElementById('dataTable').rows.length - 1];
+                lastDateTime = lastRow.cells[0].innerText.replace(/[\s/:]/g, '_');
+            }
+            const filename = 'DataSheet_Composter' + currentComposter + '_' + lastDateTime + '.xlsx';
+            const workbook = XLSX.utils.table_to_book(document.getElementById('dataTable'), {sheet: "Sheet 1"});
+            XLSX.writeFile(workbook, filename);
+        }
+
+        function updateSelectOptions() {
+            const select = document.getElementById('rows-select');
+            select.innerHTML = '';
+            const totalRows = document.querySelectorAll('#dataTable tbody tr').length;
+            for (let i = 5; i <= totalRows; i += 5) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.text = i;
+                select.appendChild(option);
+            }
+            select.value = currentRowsVisible; // Set the current value as selected in the dropdown
+        }
+
+        window.onload = function() {
+            generateSampleData(); // Generate initial data
+            updateSelectOptions(); // Initialize select options
+        };
+    </script>
+</body>
+</html>

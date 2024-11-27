@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>COMPOSTERS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="topnav">COMPOSTERS <span class="time-display" id="date"></span></div>
+    <table>
+        <thead>
+            <tr>
+                <th><i class="fas fa-microchip icon"></i> Device</th>
+                <th class="temperature"><i class="fas fa-thermometer-half icon"></i> Temperature 1</th>
+                <th class="temperature"><i class="fas fa-thermometer-half icon"></i> Temperature 2</th>
+                <th class="humidity"><i class="fas fa-tint icon"></i> Humidity</th>
+                <th class="weight"><i class="fas fa-weight-hanging icon"></i> Load</th>
+            </tr>
+        </thead>
+        <tbody id="dataRows">
+            <!-- Rows will be populated here -->
+        </tbody>
+    </table>
+    <div class="center">
+        <button class="refresh-button" onclick="fetchData()">Refresh Data</button>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        socket.on('FromAPI', function(data) {
+            updateTable(data);
+        });
+
+        function updateTable(data) {
+            const tbody = document.getElementById('dataRows');
+            tbody.innerHTML = ''; // Efface les lignes existantes
+            const row = tbody.insertRow();
+            row.insertCell(0).textContent = data.deviceId || 'Unknown';
+            row.insertCell(1).textContent = data.temperature1.toFixed(2) + ' °C';
+            row.insertCell(2).textContent = data.temperature2.toFixed(2) + ' °C';
+            row.insertCell(3).textContent = data.humidity.toFixed(2) + ' %';
+            row.insertCell(4).textContent = data.load.toFixed(2) + ' kg';
+        }
+
+        function fetchData() {
+            socket.emit('requestData'); // Demande de nouvelles données au serveur
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+/* styles.css */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+    color: #333;
+    text-align: center;
+}
+
+.topnav {
+    overflow: hidden;
+    background-color: #2f4468;
+    color: white;
+    font-size: 1.7rem;
+    padding: 10px;
+    position: relative;
+}
+
+.time-display {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 1.2rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate; /* Ensures space between cells */
+    border-spacing: 2px; /* Controls the space between cells */
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd; /* Adds vertical line between cells */
+}
+
+.temperature { color: #fd7e14; }
+.humidity { color: #1b78e2; }
+.weight { color: #20c997; }
+
+.refresh-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-top: 20px;
+}
+
+.icon {
+    margin-right: 5px;
+}
+
+.center {
+    text-align: center;
+}
